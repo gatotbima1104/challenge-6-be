@@ -66,5 +66,12 @@ export class ScheduleController {
             next(error);   
         }
     }
+
+    async testServer(req: Request, res: Response, next: NextFunction) {
+        return res.status(200).json({
+            message: "Success",
+            data: "works"
+        })
+    }
     
 }
