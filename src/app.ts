@@ -60,3 +60,8 @@ export class App {
     });
   }
 }
+
+// ✅ ADD THIS:
+export function buildApp(): Application {
+  return new App().instance;
+}

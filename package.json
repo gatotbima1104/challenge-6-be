@@ -2,9 +2,9 @@
   "name": "challenge6-be",
   "version": "1.0.0",
   "description": "",
-  "main": "server.ts",
+  "main": "index.ts",
   "scripts": {
-    "start:dev": "nodemon --files src/server.ts",
+    "start:dev": "nodemon --files src/index.ts",
     "build": "tsc"
   },
   "keywords": [],
