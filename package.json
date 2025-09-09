@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start:dev": "nodemon --files src/server.ts"
+    "start:dev": "nodemon --files src/server.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
