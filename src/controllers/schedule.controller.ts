@@ -34,6 +34,17 @@ export class ScheduleController {
                             Daftar aktivitas:
                             ${activities.map((item: any) => `- ${item}`).join("\n")}
 
+                            [NOTES]
+                            - **WAJIB**: Setiap aktivitas di daftar harus muncul **tepat satu kali** di output. Tidak boleh ada yang hilang atau terduplikasi.  
+                            - Kelompokkan aktivitas luar rumah agar efisien (misalnya belanja + laundry + ke rumah teman, etc).
+                            - Tidak boleh ada aktivitas yang muncul lebih dari sekali dalam array output
+                            - Jangan terikat waktu perjam pada setiap aktivitas, gunakan rentang waktu yang masuk akal.
+                            - Pastikan penjadwalan berdasarkan energi orang pada umumnya (misalnya aktivitas berat di jam produktif, olahraga di pagi atau sore hari, etc).
+                            -  Output harus berupa JSON array dengan format tanpa ada teks lain di luar array:
+                                [
+                                    { "date": "YYYY-MM-DD", "start": "HH:mm", "end": "HH:mm", "activity": "...", "isDaily": true/false, "isWeekly": true/false, "isMonthly": true/false }
+                                ].
+
                             [INSTRUKSI]
                             1. Setiap aktivitas di daftar harus dijadwalkan tepat satu kali pada tanggal yang sesuai.
                                 • Default = tanggal hari ini (todayISO).
@@ -45,16 +56,14 @@ export class ScheduleController {
                                 • "setiap hari" → jadwalkan sekali di hari ini, beri "isDaily": true.  
                                 • "setiap minggu" → jadwalkan sekali di hari ini juga, beri "isWeekly": true.  
                                 • "setiap bulan" → jadwalkan sekali di hari ini juga, beri "isMonthly": true.  
-                            3. Tidak boleh ada aktivitas yang muncul lebih dari sekali dalam array output.
-                            4. Pastikan jadwal berada di antara jam bangun hingga tidur.
-                            5. Kelompokkan aktivitas luar rumah agar efisien (misalnya belanja + laundry + ke rumah teman).
-                            6. Aktivitas produktif harus ditempatkan dalam rentang jam produktif bila memungkinkan.
-                            7. Jangan isi gap/jeda kosong, langsung lompat ke aktivitas berikutnya.
-                            8. Field "date" wajib menggunakan tanggal hari ini dalam format ISO berdasarkan timezonenya {YYYY-MM-DD → inject dari host code, misalnya pakai \`${new Date().toISOString().slice(0,10)}.
-                            9. Output harus berupa JSON array dengan format tanpa ada teks lain di luar array:
-                            [
-                                { "date": "YYYY-MM-DD", "start": "HH:mm", "end": "HH:mm", "activity": "...", "isDaily": true/false, "isWeekly": true/false, "isMonthly": true/false }
-                            ].
+                            3. Pastikan jadwal berada di antara jam bangun hingga tidur.
+                            4. Aktivitas produktif harus ditempatkan dalam rentang jam produktif bila memungkinkan.
+                            5. Jangan isi gap/jeda kosong, langsung lompat ke aktivitas berikutnya.
+                            6. Field "date" wajib menggunakan tanggal hari ini dalam format ISO berdasarkan timezonenya {YYYY-MM-DD → inject dari host code, misalnya pakai \`${new Date().toISOString().slice(0,10)}.
+                            7. Jika aktivitas tidak punya jam eksplisit, gunakan aturan default:  
+                                • Aktivitas produktif → taruh di jam produktif.  
+                                • Aktivitas santai/rekreasi/outdoor (mis. olahraga, memancing, main bola) → taruh di jam yang cocok dengan aktivitas itu, **jangan taruh malam dekat jam tidur**.  
+                                • Jika durasi tidak disebutkan → gunakan default 1–2 jam.  
                         `
                     }
                 ]
