@@ -8,7 +8,7 @@ export class ScheduleController {
         try {
 
             const { sleepTime, wakeupTime, productivityTime, activities } = req.body || {};
-            console.log(req.body);
+            // console.log(req.body);
             if (typeof sleepTime !== "string" || sleepTime.trim() === "" ||
                 typeof wakeupTime !== "string" || wakeupTime.trim() === "" ||
                 typeof productivityTime !== "string" || productivityTime.trim() === "") {
@@ -31,18 +31,30 @@ export class ScheduleController {
                             Jam tidur: ${sleepTime}
                             Jam bangun: ${wakeupTime}
                             Jam produktif: ${productivityTime}
-                            Daftar aktivitas: ${activities.map((item: any) => `- ${item}`).join("\n")}
+                            Daftar aktivitas:
+                            ${activities.map((item: any) => `- ${item}`).join("\n")}
 
                             [INSTRUKSI]
-                            1. Pastikan mengikuti Data jam tidur dan bangun serta produktifitas.
-                            2. Susun jadwal realistis berdasarkan kebiasaan umum, dengan mengelompokkan aktivitas luar rumah.
-                            3. Jangan tambahkan aktivitas yang tidak ada di daftar.
-                            4. Jangan tuliskan jeda/gap kosong, cukup lompat jamnya.
-                            5. Kalau jadwalnya tidak ada informasi tanggal berakhir, artinya itu akan menjadi aktivitas pada hari ini.
-                            6. Balikan hasil dalam JSON array dengan format:
+                            1. Setiap aktivitas di daftar harus dijadwalkan tepat satu kali pada tanggal yang sesuai.
+                                • Default = tanggal hari ini (todayISO).
+                                • Jika ada kata "besok"/"tomorrow"/"mañana"/"demain"/dst → date = hari ini + 1.
+                                • Jika ada kata "lusa"/"day after tomorrow"/"après-demain"/dst → date = hari ini + 2.
+                                • Jika ada tanggal eksplisit (mis. "tanggal 13 september", "13/09", "2025-09-13") → gunakan tanggal itu (format ke ISO YYYY-MM-DD).
+                                • Jika ada nama hari (Senin, Monday, Lunes, Lundi, Montag, dll) → gunakan kemunculan berikutnya dari hari itu.
+                            2. Gunakan field "isDaily", "isWeekly", "isMonthly" hanya sebagai penanda pola, bukan menentukan tanggal:
+                                • "setiap hari" → jadwalkan sekali di hari ini, beri "isDaily": true.  
+                                • "setiap minggu" → jadwalkan sekali di hari ini juga, beri "isWeekly": true.  
+                                • "setiap bulan" → jadwalkan sekali di hari ini juga, beri "isMonthly": true.  
+                            3. Tidak boleh ada aktivitas yang muncul lebih dari sekali dalam array output.
+                            4. Pastikan jadwal berada di antara jam bangun hingga tidur.
+                            5. Kelompokkan aktivitas luar rumah agar efisien (misalnya belanja + laundry + ke rumah teman).
+                            6. Aktivitas produktif harus ditempatkan dalam rentang jam produktif bila memungkinkan.
+                            7. Jangan isi gap/jeda kosong, langsung lompat ke aktivitas berikutnya.
+                            8. Field "date" wajib menggunakan tanggal hari ini dalam format ISO berdasarkan timezonenya {YYYY-MM-DD → inject dari host code, misalnya pakai \`${new Date().toISOString().slice(0,10)}.
+                            9. Output harus berupa JSON array dengan format tanpa ada teks lain di luar array:
                             [
-                                { "start": "HH:mm", "end": "HH:mm", "activity": "..." }
-                            ]
+                                { "date": "YYYY-MM-DD", "start": "HH:mm", "end": "HH:mm", "activity": "...", "isDaily": true/false, "isWeekly": true/false, "isMonthly": true/false }
+                            ].
                         `
                     }
                 ]
