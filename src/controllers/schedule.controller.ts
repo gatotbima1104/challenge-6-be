@@ -13,7 +13,7 @@ export class ScheduleController {
         })
 
         this.createSchedule = this.createSchedule.bind(this);
-        // this.updatedSchedule = this.updatedSchedule.bind(this);
+        this.updatedSchedule = this.updatedSchedule.bind(this);
         this.testServer = this.testServer.bind(this);
     }
 
@@ -106,6 +106,68 @@ export class ScheduleController {
             
         } catch (error) {
             next(error);   
+        }
+    }
+
+    async updatedSchedule(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const { oldSchedule, newSchedule } = req.body || {};
+            if (Object.keys(oldSchedule).length === 0 && Object.keys(newSchedule).length === 0) {
+                return res.status(400).json({ message: "Request body is empty." });
+            }
+
+            const response = await this.client.chat.completions.create({
+                model: "gpt-4.1-mini",
+                messages: [
+                    {
+                        role: "user",
+                        content: `
+                            Ini adalah jadwal lama (oldSchedule):
+                            ${JSON.stringify(oldSchedule, null, 2)}
+
+                            Lakukan update berdasarkan instruksi berikut (newSchedule):
+                            ${JSON.stringify(newSchedule, null, 2)}
+
+                            Aturan penting:
+                            - Keluarkan **semua aktivitas** dari jadwal lama, tetapi dengan perubahan dari newSchedule sudah diterapkan.
+                            - Jika aktivitas dihapus, jangan masukkan ke hasil.
+                            - Jika aktivitas diubah, pastikan field lain tetap sama kecuali yang dimodifikasi.
+                            - Format tanggal selalu: "YYYY-MM-DD".
+                            - Format waktu selalu: "HH:mm" (24 jam).
+                            - Output WAJIB berupa array JSON valid tanpa teks tambahan, tanpa markdown, tanpa komentar:
+                            [
+                            {
+                                "date": ["YYYY-MM-DD"],
+                                "start": "HH:mm",
+                                "end": "HH:mm",
+                                "activity": "...",
+                                "isDaily": true/false,
+                                "isWeekly": true/false,
+                                "isMonthly": true/false
+                            }
+                            ]
+                        `
+                    }
+                ]
+            })
+
+            const raw = response.choices[0]?.message.content || "{}";
+            let parsed: any;
+
+            try {
+                parsed = JSON.parse(raw);
+            } catch {
+                parsed = { schedule: raw };
+            }
+
+            return res.status(200).json({
+                message: "Success",
+                data: parsed
+            })
+            
+        } catch (error) {
+            next(error);
         }
     }
 

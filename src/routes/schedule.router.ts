@@ -6,7 +6,7 @@ export const scheduleRouter = () => {
   const scheduleController = new ScheduleController();
 
   router.post("/schedule", scheduleController.createSchedule);
-  // router.post("/update", scheduleController.updatedSchedule);
+  router.post("/update", scheduleController.updatedSchedule);
   router.get("/test", scheduleController.testServer);
 
   return router;
