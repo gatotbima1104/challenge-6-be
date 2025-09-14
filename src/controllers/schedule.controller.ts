@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { sumopodApiKey, sumopodApiUrl } from "../config";
 import OpenAI from "openai";
+import { ScheduleArraySchema } from "../schemas/index";
+import { v4 as uuidv4 } from 'uuid';
 
 export class ScheduleController {
 
@@ -16,6 +18,32 @@ export class ScheduleController {
         this.updatedSchedule = this.updatedSchedule.bind(this);
         this.testServer = this.testServer.bind(this);
     }
+
+    // Clean the response
+    private cleanJsonString = (str: string): string => {
+        let cleaned = str.trim();
+
+        // Remove leading ```json or ``` 
+        if (cleaned.startsWith("```")) {
+            cleaned = cleaned.replace(/^```[a-z]*\n?/, "");
+        }
+
+        // Remove trailing ```
+        if (cleaned.endsWith("```")) {
+            cleaned = cleaned.replace(/```$/, "");
+        }
+
+        return cleaned.trim();
+    }
+
+    // Compare two activities ignoring the id field
+    private isSameActivity = (a: any, b: any): boolean => {
+        return (
+            JSON.stringify({ ...a, id: undefined }) ===
+            JSON.stringify({ ...b, id: undefined })
+        );
+    }
+
 
     async createSchedule(req: Request, res: Response, next: NextFunction) {
         try {
@@ -91,12 +119,20 @@ export class ScheduleController {
             })
 
             const raw = response.choices[0]?.message.content || "{}";
-            let parsed: any;
+            let parsed;
 
             try {
-                parsed = JSON.parse(raw);
-            } catch {
-                parsed = { schedule: raw };
+
+                const cleaned = this.cleanJsonString(raw)
+                const rawResponse = JSON.parse(cleaned)
+                const validate = ScheduleArraySchema.parse(rawResponse);
+                parsed = validate.map( item => ({
+                    id: uuidv4(),
+                    ...item
+                }))
+            } catch (e) {
+                console.error("Invalid schedule format:", e);
+                return res.status(500).json({ message: "Invalid response format", raw });
             }
 
             return res.status(200).json({
@@ -153,12 +189,25 @@ export class ScheduleController {
             })
 
             const raw = response.choices[0]?.message.content || "{}";
-            let parsed: any;
+            let parsed;
 
             try {
-                parsed = JSON.parse(raw);
-            } catch {
-                parsed = { schedule: raw };
+                const cleaned = this.cleanJsonString(raw)
+                const rawResponse = JSON.parse(cleaned)
+                const validate = ScheduleArraySchema.parse(rawResponse);
+                parsed = validate.map((item) => {
+                    const match = oldSchedule.find((old: any) =>
+                    this.isSameActivity(old, item)
+                    );
+
+                    return {
+                    id: match ? match.id : uuidv4(),
+                    ...item,
+                    };
+                });
+            } catch (e) {
+                console.error("Invalid schedule format:", e);
+                return res.status(500).json({ message: "Invalid response format", raw });
             }
 
             return res.status(200).json({
