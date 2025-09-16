@@ -83,7 +83,7 @@ export class ScheduleController {
                                      "isDaily": true/false, 
                                      "isWeekly": true/false, 
                                      "isMonthly": true/false,
-                                     "reminder": querter 
+                                     "reminder": quarter 
                                    }
                                ].
                             - **WAJIB** Jika ada aktivitas yang punya title sama, cukup satu objek saja, masukkan semua tanggal dalam array [date].
@@ -182,7 +182,7 @@ export class ScheduleController {
                                 "isWeekly": true/false,
                                 "isMonthly": true/false,
                                 "description" : "...",
-                                "reminder": querter
+                                "reminder": quarter
                             }
                             ]
                         `
