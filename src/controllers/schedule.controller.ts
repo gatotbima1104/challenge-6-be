@@ -80,7 +80,6 @@ export class ScheduleController {
                                      "start": "HH:mm", 
                                      "end": "HH:mm", 
                                      "activity": "...",
-                                     "description" : "",    // Filled with always empty string
                                      "isDaily": true/false, 
                                      "isWeekly": true/false, 
                                      "isMonthly": true/false 
@@ -126,7 +125,8 @@ export class ScheduleController {
                 const validate = ScheduleArraySchema.parse(rawResponse);
                 parsed = validate.map( item => ({
                     id: uuidv4(),
-                    ...item
+                    ...item,
+                    description: "",
                 }))
             } catch (e) {
                 console.error("Invalid schedule format:", e);
@@ -176,10 +176,10 @@ export class ScheduleController {
                                 "start": "HH:mm",
                                 "end": "HH:mm",
                                 "activity": "...",
-                                "description" : "",
                                 "isDaily": true/false,
                                 "isWeekly": true/false,
-                                "isMonthly": true/false
+                                "isMonthly": true/false,
+                                "description" : "...",
                             }
                             ]
                         `
