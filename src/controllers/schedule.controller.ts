@@ -83,8 +83,7 @@ export class ScheduleController {
                                      "isDaily": true/false, 
                                      "isWeekly": true/false, 
                                      "isMonthly": true/false,
-                                     "reminder": "quarter",
-                                     "isCurrent": false
+                                     "reminder": "quarter"
                                    }
                                ].
                             - **WAJIB** Jika ada aktivitas yang punya title sama, cukup satu objek saja, masukkan semua tanggal dalam array [date].
@@ -129,7 +128,8 @@ export class ScheduleController {
                     id: uuidv4(),
                     ...item,
                     description: "",
-                    reminder: "quarter"
+                    reminder: "quarter",
+                    isCurrent: false
                 }))
             } catch (e) {
                 console.error("Invalid schedule format:", e);
