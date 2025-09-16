@@ -79,7 +79,8 @@ export class ScheduleController {
                                      "date": ["YYYY-MM-DD"],   // selalu array of string, meski hanya 1 tanggal
                                      "start": "HH:mm", 
                                      "end": "HH:mm", 
-                                     "activity": "...", 
+                                     "activity": "...",
+                                     "description" : "",    // Filled with always empty string
                                      "isDaily": true/false, 
                                      "isWeekly": true/false, 
                                      "isMonthly": true/false 
@@ -175,6 +176,7 @@ export class ScheduleController {
                                 "start": "HH:mm",
                                 "end": "HH:mm",
                                 "activity": "...",
+                                "description" : "",
                                 "isDaily": true/false,
                                 "isWeekly": true/false,
                                 "isMonthly": true/false
