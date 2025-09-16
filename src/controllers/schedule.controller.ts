@@ -48,12 +48,10 @@ export class ScheduleController {
     async createSchedule(req: Request, res: Response, next: NextFunction) {
         try {
 
-            const { sleepTime, wakeupTime, productivityTime, activities } = req.body || {};
+            const { activities } = req.body || {};
             // console.log(req.body);
-            if (typeof sleepTime !== "string" || sleepTime.trim() === "" ||
-                typeof wakeupTime !== "string" || wakeupTime.trim() === "" ||
-                typeof productivityTime !== "string" || productivityTime.trim() === "") {
-                return res.status(400).json({ message: "Please enter the sleep time, wakeup time, and productivity time." });
+            if (typeof activities === "undefined" || !Array.isArray(activities) || activities.length === 0) {
+                return res.status(400).json({ message: "Activities are required." });
             }
 
             const response = await this.client.chat.completions.create({
@@ -64,9 +62,8 @@ export class ScheduleController {
                         content : 
                         `
                             [DATA]
-                            Jam tidur: ${sleepTime}
-                            Jam bangun: ${wakeupTime}
-                            Jam produktif: ${productivityTime}
+                            Jam bangun dan tidur orang pada umumnya: 07:00 - 22:00
+                            Jam produktif: Ikut jam produktif umum orang pada umumnya (antara jam 09:00 - 17:00)
                             Daftar aktivitas:
                             ${activities.map((item: any) => `- ${item}`).join("\n")}
 
