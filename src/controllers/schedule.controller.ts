@@ -82,7 +82,8 @@ export class ScheduleController {
                                      "activity": "...",
                                      "isDaily": true/false, 
                                      "isWeekly": true/false, 
-                                     "isMonthly": true/false 
+                                     "isMonthly": true/false,
+                                     "reminder": querter 
                                    }
                                ].
                             - **WAJIB** Jika ada aktivitas yang punya title sama, cukup satu objek saja, masukkan semua tanggal dalam array [date].
@@ -127,6 +128,7 @@ export class ScheduleController {
                     id: uuidv4(),
                     ...item,
                     description: "",
+                    reminder: "quarter"
                 }))
             } catch (e) {
                 console.error("Invalid schedule format:", e);
@@ -180,6 +182,7 @@ export class ScheduleController {
                                 "isWeekly": true/false,
                                 "isMonthly": true/false,
                                 "description" : "...",
+                                "reminder": querter
                             }
                             ]
                         `
