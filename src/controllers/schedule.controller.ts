@@ -69,6 +69,11 @@ export class ScheduleController {
 
                             [NOTES]
                             - **WAJIB**: Setiap aktivitas di daftar harus muncul **tepat satu kali** di output. Tidak boleh ada yang hilang atau terduplikasi.  
+                             - Nama aktivitas harus **disederhanakan**:
+                                • Ambil inti penting saja, jangan pakai kata tambahan.  
+                                • Contoh: "at dinner time" → "Dinner", "do some workout in the morning" → "Workout".  
+                                • Hilangkan kata hubung, preposisi, dan keterangan waktu (at, in, on, time, etc).  
+                                • Gunakan bentuk kata benda/singkatan yang umum dipakai di jadwal.  
                             - Kelompokkan aktivitas luar rumah agar efisien (misalnya belanja + laundry + ke rumah teman, etc).
                             - Tidak boleh ada aktivitas yang muncul lebih dari sekali dalam array output
                             - Jangan terikat waktu perjam pada setiap aktivitas, gunakan rentang waktu yang masuk akal.
