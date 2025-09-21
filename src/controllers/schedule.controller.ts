@@ -177,21 +177,19 @@ export class ScheduleController {
                             - Jika aktivitas diubah, pastikan field lain tetap sama kecuali yang dimodifikasi.
                             - Format tanggal selalu: "YYYY-MM-DD".
                             - Format waktu selalu: "HH:mm" (24 jam).
-                            - Output WAJIB berupa array JSON valid tanpa teks tambahan, tanpa markdown, tanpa komentar:
+                            - Output harus berupa JSON array dan **WAJIB** format tanpa ada teks lain di luar array:
                             [
-                            {
-                                "date": ["YYYY-MM-DD"],
-                                "start": "HH:mm",
-                                "end": "HH:mm",
-                                "activity": "...",
-                                "isDaily": true/false,
-                                "isWeekly": true/false,
-                                "isMonthly": true/false,
-                                "description" : "...",
-                                "reminder": "quarter",
-                                "isCurrent": false
-                            }
-                            ]
+                                { 
+                                    "date": ["YYYY-MM-DD"],   // selalu array of string, meski hanya 1 tanggal
+                                    "start": "HH:mm", 
+                                    "end": "HH:mm", 
+                                    "activity": "...",
+                                    "isDaily": true/false, 
+                                    "isWeekly": true/false, 
+                                    "isMonthly": true/false,
+                                    "reminder": "quarter"
+                                }
+                            ].
                         `
                     }
                 ]
@@ -212,6 +210,9 @@ export class ScheduleController {
                     return {
                     id: match ? match.id : uuidv4(),
                     ...item,
+                    description: match ? match.description : "",
+                    reminder: match ? match.reminder : "quarter",
+                    isCurrent: false
                     };
                 });
             } catch (e) {
