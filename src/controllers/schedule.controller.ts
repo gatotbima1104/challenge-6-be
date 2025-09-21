@@ -83,7 +83,7 @@ export class ScheduleController {
                                    { 
                                      "date": ["YYYY-MM-DD"],   // selalu array of string, meski hanya 1 tanggal
                                      "start": "HH:mm", 
-                                     "end": "HH:mm", 
+                                     "end": "HH:mm", // Make sure end is after start
                                      "activity": "...",
                                      "isDaily": true/false, 
                                      "isWeekly": true/false, 
@@ -183,7 +183,7 @@ export class ScheduleController {
                                     "id": "SAME_AS_OLD",
                                     "date": ["YYYY-MM-DD"],   // selalu array of string, meski hanya 1 tanggal
                                     "start": "HH:mm", 
-                                    "end": "HH:mm", 
+                                    "end": "HH:mm", // Make sure end is after start
                                     "activity": "...",
                                     "isDaily": true/false, 
                                     "isWeekly": true/false, 
