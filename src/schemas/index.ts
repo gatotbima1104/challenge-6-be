@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const ScheduleItemSchema = z.object({
+  id: z.string().uuid().optional(),
   date: z.array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)),
   start: z.string().regex(/^\d{2}:\d{2}$/),
   end: z.string().regex(/^\d{2}:\d{2}$/),

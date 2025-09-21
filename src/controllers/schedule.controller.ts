@@ -180,6 +180,7 @@ export class ScheduleController {
                             - Output harus berupa JSON array dan **WAJIB** format tanpa ada teks lain di luar array:
                             [
                                 { 
+                                    "id": "SAME_AS_OLD",
                                     "date": ["YYYY-MM-DD"],   // selalu array of string, meski hanya 1 tanggal
                                     "start": "HH:mm", 
                                     "end": "HH:mm", 
@@ -208,8 +209,8 @@ export class ScheduleController {
                     );
 
                     return {
-                    id: match ? match.id : uuidv4(),
                     ...item,
+                    // id,
                     description: match ? match.description : "",
                     reminder: match ? match.reminder : "quarter",
                     isCurrent: false
