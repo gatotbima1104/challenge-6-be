@@ -54,6 +54,9 @@ export class ScheduleController {
                 return res.status(400).json({ message: "Activities are required." });
             }
 
+            const todayISO = new Date().toISOString().slice(0, 10);     // YYYY-MM-DD
+            const nowTime = new Date().toISOString().slice(11, 16);   
+
             const response = await this.client.chat.completions.create({
                 model: "gpt-4.1-mini",
                 messages: [
@@ -62,6 +65,8 @@ export class ScheduleController {
                         content : 
                         `
                             [DATA]
+                            Kondisi waktu sekarang: tanggal ${todayISO}, jam ${nowTime}.  
+                            Tentukan periode: pagi (07:00–11:59), siang (12:00–15:59), sore (16:00–18:59), malam (19:00–22:00).  
                             Jam bangun dan tidur orang pada umumnya: 07:00 - 22:00
                             Jam produktif: Ikut jam produktif umum orang pada umumnya (antara jam 09:00 - 17:00)
                             Daftar aktivitas:
@@ -69,6 +74,10 @@ export class ScheduleController {
 
                             [NOTES]
                             - **WAJIB**: Setiap aktivitas di daftar harus muncul **tepat satu kali** di output. Tidak boleh ada yang hilang atau terduplikasi.  
+                            - **WAJIB**: Waktu mulai ("start") tidak boleh lebih kecil dari jam sekarang (${nowTime}) pada hari ${todayISO}.  
+                                • Jika aktivitas cocok pagi (misalnya Gym 07:00) tetapi sekarang sudah lewat (${nowTime}), geser ke slot berikutnya yang masih logis hari ini (contoh sore atau malam).  
+                                • Jika semua slot logis hari ini sudah lewat, pindahkan aktivitas ke hari berikutnya (${todayISO}+1) pada jam yang sesuai (contoh Gym = pagi besok).  
+                                • Selalu pastikan "end" > "start". 
                              - Nama aktivitas harus **disederhanakan**:
                                 • Ambil inti penting saja, jangan pakai kata tambahan.  
                                 • Contoh: "at dinner time" → "Dinner", "do some workout in the morning" → "Workout".  
@@ -237,6 +246,13 @@ export class ScheduleController {
         return res.status(200).json({
             message: "Success",
             data: "works"
+        })
+    }
+
+    async voteServer(req: Request, res: Response, next: NextFunction) {
+        return res.status(200).json({
+            message: "success",
+            data: "this endpoint is for voting purpose only"
         })
     }
     

@@ -8,6 +8,7 @@ export const scheduleRouter = () => {
   router.post("/schedule", scheduleController.createSchedule);
   router.post("/update", scheduleController.updatedSchedule);
   router.get("/test", scheduleController.testServer);
+  router.get("/vote", scheduleController.voteServer);
 
   return router;
 };
