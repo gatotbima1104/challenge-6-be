@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { sumopodApiKey, sumopodApiUrl } from "../config";
+import { sumopodApiKey, sumopodApiUrl, CLOUDKIT_CONFIG } from "../config";
 import OpenAI from "openai";
 import { ScheduleArraySchema } from "../schemas/index";
 import { v4 as uuidv4 } from 'uuid';
+import axios from "axios";
 
 export class ScheduleController {
 
@@ -250,10 +251,49 @@ export class ScheduleController {
     }
 
     async voteServer(req: Request, res: Response, next: NextFunction) {
-        return res.status(200).json({
-            message: "success",
-            data: "this endpoint is for voting purpose only"
-        })
+    try {
+      const { name, times } = req.body;
+      console.log(req.body);
+
+      if (!name || !Array.isArray(times)) {
+        return res.status(400).json({ message: "Invalid request body" });
+      }
+
+      const record = {
+        operationType: "create",
+        recordType: "Vote",
+        fields: {
+          name: { value: name },
+          times: { value: times },
+          isVoted: { value: false },
+          createdAt: { value: new Date().toISOString() },
+          updatedAt: { value: new Date().toISOString() },
+        },
+      };
+
+      const response = await axios.post(
+        `https://api.apple-cloudkit.com/database/1/${CLOUDKIT_CONFIG.container}/${CLOUDKIT_CONFIG.environment}/public/records/modify`,
+        { operations: [record] },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Apple-CloudKit-Request-KeyID": CLOUDKIT_CONFIG.apiToken,
+          },
+        }
+      );
+
+      return res.status(200).json({
+        message: "Vote saved to CloudKit",
+        data: response.data,
+      });
+    } catch (error: any) {
+      console.error("CloudKit Error:", error.response?.data || error.message);
+      return res.status(500).json({
+        message: "Failed to save vote",
+        error: error.response?.data || error.message,
+      });
     }
+  }
     
 }
+
